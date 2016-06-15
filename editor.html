@@ -1,0 +1,254 @@
+<html>
+    <head>
+        <script src="jquery.js"></script>
+        <script src="jquery.rotate.js"></script>
+        <script src="jquery-ui-1.11.4/jquery-ui.min.js"></script>
+        <script src="library.js"></script>
+        <script src="inspector.js"></script>
+        <script src="editor.js"></script>
+        <script src="editor_inspector.js"></script>
+        <link href="jquery-ui-1.11.4/jquery-ui.min.css" rel="stylesheet" type="text/css">
+        <link href="editor.css" rel="stylesheet" type="text/css">
+        <title>Keynote.js</title>
+    </head>
+    <body> 
+        <!-- Menu Bar -->
+        <div id="menu_bar">
+            <button class="menu_bar_button uibutton" id="new_page">New Page</button>
+            <button class="menu_bar_button uibutton" id="new_text_obj">New Text Object</button>
+            <button class="menu_bar_button uibutton" id="new_image_obj">New Image Object</button>
+            <button class="menu_bar_button uibutton" id="new_code_obj">New Code Object</button>
+            <button class="menu_bar_button uibutton" id="preview_this_page">Preview</button>
+            
+            <label for="animation_enabled_input">Animation</label>
+            <input id="animation_enabled_input" checked="checked" type="checkbox">
+            
+            <div id="message_panel"></div>
+        </div>
+        <table id="content_frame"><tr>
+            <td id="preview_frame">
+                <iframe id="preview" src="templates/default.html"></iframe>
+            </td>
+            <td id="inspector_frame">
+                <ul>
+                    <li><a href="#objects_panel">Objects</a></li>
+                    <li><a href="#state_panel">States</a></li>
+                    <li><a href="#page_panel">Page</a></li>
+                    <li><a href="#output">Output</a></li>
+                </ul>
+       <!-- Inspector -->
+                <div class="inspector_panel" id="objects_panel">
+                    <div id="objects_selector" class="selector">
+                        <ul id="object_list">
+                        </ul>
+                    </div>
+                    <ul id="objects_form" class="options">
+                        <li>
+                            <input class="index" id="object_id" type="text">
+                        </li>
+                        <li>
+                            <label for="object_name_input">Object ID</label>
+                            <input id="object_name_input" type="text">
+                        </li>
+                        <li>
+                            <label for="auto_reset_input">Auto Reset</label>
+                            <input id="auto_reset_input" type="checkbox">
+                        </li>
+                        <li>
+                            <label for="z_index_input">Z-Index</label>
+                            <input id="z_index_input" type="number">
+                        </li>
+                        <li>
+                            <label for="object_code_input">Code</label>
+                            <textarea id="object_code_input"></textarea>
+                        </li>
+                        <hr/>
+                        <button class="uibutton" id="confirm_object_changes">Confirm</button>
+                        <button class="uibutton" id="refresh_object_list">Refresh</button>
+                        <button class="uibutton" id="delete_object">Delete</button>
+                    </ul>
+                </div>
+                
+                <div class="inspector_panel" id="state_panel">
+                    <div id="object_state_selector" class="selector">
+                        <ul id="object_state_list">
+                        </ul>
+                    </div>
+                    <ul id="states_form" class="options">
+                        <li>
+                            <input class="index" id="state_id" type="text">
+                        </li>
+                        <li>
+                            <label for="x_percent_input">X%</label>
+                            <input id="x_percent_input" min="-50" max="150" step="10" type="number">
+                        </li>
+                        <li>
+                            <label for="x_delta_input">+X px</label>
+                            <input id="x_delta_input" step="50" type="number">
+                        </li>
+                        <li>
+                            <label for="y_percent_input">Y%</label>
+                            <input id="y_percent_input" min="-50" max="150" step="10" type="number">
+                        </li>
+                        <li>
+                            <label for="y_delta_input">+Y px</label>
+                            <input id="y_delta_input" step="50" type="number">
+                        </li>
+                        <hr>
+                        <li>
+                            <label for="alpha_input">Alpha</label>
+                            <input id="alpha_input" min="0" max="1" step="0.01" type="range">
+                            <input id="alpha_input_display" min="0" max="1" step="0.1" type="number">
+                        </li>
+                    </ul>
+                    <hr>
+                    <div class="optional panel" id="size_panel">
+                        <h3>Size</h3>
+                        <div>
+                        <ul class="options">
+                            <li>
+                                <input id="size_enabled_input" class="enabler" type="checkbox">
+                            </li>
+                            <li>
+                                <label for="width_percent_input">Width:</label>
+                                <input id="width_percent_input" min="0" max="150" step="10" type="number">
+                                <label for="width_delta_input">% + </label>
+                                <input class="pixel" id="width_delta_input" step="50" type="number">
+								<span>px</span>
+                            </li>
+                            <li>
+                                <label for="height_percent_input">Height:</label>
+                                <input id="height_percent_input" min="0" max="150" step="10" type="number">
+                                <label for="height_delta_input">% + </label>
+                                <input class="pixel" id="height_delta_input" step="50" type="number">
+								<span>px</span>
+                            </li>
+                        </ul>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="optional panel" id="rotate_panel">
+                        <h3>Rotate</h3>
+                        <div>
+                            <ul class="options">
+                                <li>
+                                    <input id="rotate_enabled_input" class="enabler" type="checkbox">
+                                </li>
+                                <li>
+                                    <label for="angle_input">Rotate</label>
+                                    <input id="angle_input" min="-3600" max="3600" step="30" type="number">
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="optional panel" id="easing_panel">
+                        <h3>Easing</h3>
+                        <div>
+                            <ul class="options">
+                                <li>
+                                    <input id="easing_enabled_input" class="enabler" type="checkbox">
+                                </li>
+                                <li>
+                                    <label for="easing_input">Easing</label>
+                                    <select class="uiselect" id="easing_input">
+                                        <option value="linear">Linear</option>
+                                        <option value="swing">Swing</option>
+                                        <option value="easeInQuad">Ease In Quad</option>
+                                        <option value="easeOutQuad">Ease Out Quad</option>
+                                        <option value="easeInOutQuad">Ease In Out Quad</option>
+                                        <option value="easeInCubic">Ease In Cubic</option>
+                                        <option value="easeOutCubic">Ease Out Cubic</option>
+                                        <option value="easeInOutCubic">Ease In Out Cubic</option>
+                                        <option value="easeInQuart">Ease In Quart</option>
+                                        <option value="easeOutQuart">Ease Out Quart</option>
+                                        <option value="easeInOutQuart">Ease In Out Quart</option>
+                                        <option value="easeInQuint">Ease In Quint</option>
+                                        <option value="easeOutQuint">Ease Out Quint</option>
+                                        <option value="easeInOutQuint">Ease In Out Quint</option>
+                                        <option value="easeInExpo">Ease In Expo</option>
+                                        <option value="easeOutExpo">Ease Out Expo</option>
+                                        <option value="easeInOutExpo">Ease In Out Expo</option>
+                                        <option value="easeInSine">Ease In Sine</option>
+                                        <option value="easeOutSine">Ease Out Sine</option>
+                                        <option value="easeInOutSine">Ease In Out Sine</option>
+                                        <option value="easeInCirc">Ease In Circ</option>
+                                        <option value="easeOutCirc">Ease Out Circ</option>
+                                        <option value="easeInOutCirc">Ease In Out Circ</option>
+                                        <option value="easeInElastic">Ease In Elastic</option>
+                                        <option value="easeOutElastic">Ease Out Elastic</option>
+                                        <option value="easeInOutElastic">Ease In Out Elastic</option>
+                                        <option value="easeInBack">Ease In Back</option>
+                                        <option value="easeOutBack">Ease Out Back</option>
+                                        <option value="easeInOutBack">Ease In Out Back</option>
+                                        <option value="easeInBounce">Ease In Bounce</option>
+                                        <option value="easeOutBounce">Ease Out Bounce</option>
+                                        <option value="easeInOutBounce">Ease In Out Bounce</option>
+                                    </select>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <hr>
+                    <ul class="options">
+                        <button class="menu_bar_button uibutton" id="new_state">New State</button>
+                        <button class="uibutton" id="confirm_state_changes">Confirm</button>
+                        <button class="uibutton" id="delete_state">Delete</button>
+                    </ul>
+                </div>
+                
+                <div class="inspector_panel" id="page_panel">
+                    <div id="page_selector" class="selector">
+                        <ul id="page_list">
+                        </ul>
+                    </div>
+                    <ul id="pages_form"  class="options">
+                        <input class="index" id="page_id" type="text">
+                        <li>
+                            <label for="page_name_input">Page Name</label>
+                            <input id="page_name_input" type="text">
+                        </li>
+                    </ul>
+                        <hr>
+                        <button class="uibutton" id="confirm_page_changes">Confirm</button>
+                        <button class="uibutton" id="delete_page">Delete</button>
+                        <hr>
+                    <ul id="pages_states_form" class="options">
+                        <li>
+                            <div id="page_state" class="selector">
+                                <ul id="page_state_list">
+                                </ul>
+                            </div>
+                        </li>
+                        <input class="index" id="page_state_id" type="text">
+                        <li>
+                            <label for="object_selector">Object</label>
+                            <select class="uiselect" id="object_selector"></select>
+                            <select class="uiselect" id="object_state_select"></select>
+                        </li>
+                        <li>
+                            <label for="object_interval_input">Interval</label>
+                            <input id="object_interval_input" min="0" step="200" type="number">
+                        </li>
+                        <li>
+                            <label for="object_duration_input">Duration</label>
+                            <input id="object_duration_input" min="0" step="200" type="number">
+                        </li>
+                    </ul>
+                        <hr>
+                        <button class="uibutton" id="confirm_page_state_changes">Confirm</button>
+                        <button class="uibutton" id="confirm_page_state_insert">Insert</button>
+                        <button class="uibutton" id="delete_page_state">Delete</button>
+                </div>
+                
+                <div class="inspector_panel" id="output">
+                    <button class="uibutton" id="output_refresh">Refresh</button>
+                    <button class="uibutton" id="output_copy">Copy to Clipboard</button>
+                    <textarea id="output_textarea">
+                    </textarea>
+                </div>
+            </td>
+        </tr></table>
+        <div id="dialog_window" class="hidden"></div>
+    </body>
+</html>

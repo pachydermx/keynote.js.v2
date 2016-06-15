@@ -1,0 +1,48 @@
+.inspector_box{
+    position: fixed;
+    z-index: 255;
+    background-color: #eeeeee;
+    border-radius: 5px;
+    border: dotted 1px black;
+    opacity: 0.8;
+    overflow: hidden;
+	top: 100px;
+	left: 100px;
+}
+
+#inspector .inspector_title label{
+    display: block;
+    padding: 10px 20px;
+    background-color: #cccccc;
+    cursor: move;
+    text-align: center;
+}
+
+#inspector .section_title{
+    display: block;
+    text-align: center;
+    margin-top: 0px;
+    background-color: #dddddd;
+    font-size: 14px;
+}
+
+#inspector ul{
+    padding-left: 0px;
+    margin: 5px;
+}
+
+#inspector li{
+    padding: 0px 10px;
+    list-style: none;
+    cursor: default;
+    font-size: 14px;
+}
+
+#inspector .selected{
+    background-color: #666666;
+    color: #ffffff;
+}
+
+.selected_object{
+    outline: dotted red 2px;
+}

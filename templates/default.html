@@ -1,0 +1,46 @@
+<html>
+<head>
+    <!-- import jquery library -->
+    <title></title>
+    <script src="../jquery.js"></script>
+    <script src="../jquery.rotate.js"></script>
+    <script src="../jquery-ui-1.11.4/jquery-ui.min.js"></script>
+    <script src="../library.js"></script>
+    <script src="../meta.js"></script>
+    <script src="../configurator.js"></script>
+    <script src="../inspector.js"></script>
+    <script src="../manager.js"></script>
+    <script src="../page.js"></script>
+    <script src="../object.js"></script>
+    <link href="../jquery-ui-1.11.4/jquery-ui.min.css" rel="stylesheet" type="text/css">
+    <link href="../keynote.css" rel="stylesheet" type="text/css">
+    <link href="../object.css" rel="stylesheet" type="text/css">
+    <link href="../inspector.css" rel="stylesheet" type="text/css">
+    <script>
+        
+        // create meta and manager objects
+        var meta = new meta();
+        var manager = new manager();
+        var pages = [];
+        var objects = [];
+        
+        // create listener
+        $(window).resize(function(){
+            meta.update();
+            manager.refresh();
+        });
+        
+        function test(){
+            console.log("a");
+        }
+        
+        // tell editor loaded
+        window.onload = function () {
+            parent.preview_loaded();
+        }
+ 
+    </script>
+</head>
+<body>
+</body>
+</html>
