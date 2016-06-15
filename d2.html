@@ -1,0 +1,181 @@
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width">
+<html>
+<head>
+    <!-- import jquery library -->
+    <title></title>
+    <script src="jquery.js"></script>
+    <script src="jquery.rotate.js"></script>
+    <script src="jquery-ui-1.11.4/jquery-ui.min.js"></script>
+    <script src="library.js"></script>
+    <script src="meta.js"></script>
+    <script src="configurator.js"></script>
+    <script src="inspector.js"></script>
+    <script src="manager.js"></script>
+    <script src="slider.js"></script>
+    <script src="page.js"></script>
+    <script src="object.js"></script>
+    <link href="jquery-ui-1.11.4/jquery-ui.min.css" rel="stylesheet" type="text/css">
+    <link href="keynote.css" rel="stylesheet" type="text/css">
+    <link href="object.css" rel="stylesheet" type="text/css">
+    <link href="inspector.css" rel="stylesheet" type="text/css">
+    <script>
+
+        // create meta and manager objects
+        var meta = new meta();
+        var manager = new manager();
+        manager.mods = ["iPad", "Vertical"];
+
+        // create objects
+        var test = new object("test", meta);
+        test.newState({
+            "position": "center",
+            "alpha": 0
+        });
+        test.newState({
+            "position": [50, 0, 50, 200],
+            "alpha": 1
+        });
+        test.newState({
+            "position": [50, 0, 50, 100],
+            "alpha": 1
+        });
+        var test_complete = function(){
+            console.log("Hello world");
+        };
+        test.add_callback(1, "complete", test_complete);
+        test.auto_reset = false;
+
+        var testa = new object("testa", meta);
+        testa.add_state(150, 0, 50, 0, 1);
+        testa.add_state(50, 0, 50, 0, 1);
+        testa.add_state(-50, 0, 50, 0, 1);
+
+        var testb = new object("testb", meta);
+        testb.add_state(150, 0, 50, 0, 1);
+        testb.add_state(50, 0, 50, 0, 1);
+        testb.add_state(-50, 0, 50, 0, 1);
+
+        var testc = new object("testc", meta);
+        testc.add_state(150, 0, 50, 0, 1);
+        testc.add_state(50, 0, 50, 0, 1);
+        testc.add_state(-50, 0, 50, 0, 1);
+
+        testa.default_exit_location = 2;
+        testb.default_exit_location = 2;
+        testc.default_exit_location = 2;
+
+        var domtest = new object("domtest", meta);
+        domtest.add_state(100, 100, 10, 100, 1);
+        domtest.add_state(100, -100, 10, 100, 1);
+        domtest.auto_reset = false;
+
+        var test2 = new object("test2", meta);
+        test2.add_state(50, 0, 100, 10, 0);
+        test2.add_state(50, 0, 50, 220, 1);
+        test2.add_easing(1, "easeOutElastic");
+        test2.add_state(50, 0, 0, -10, 0);
+        test2.default_exit_location = 2;
+
+        var imgtest = new object("test3", meta);
+        imgtest.add_state(-50, 0, 50, 0, 1);
+        imgtest.add_size_transform(0, 100, -40, 100, -40);
+        imgtest.add_state(50, 0, 50, 0, 1);
+        imgtest.add_size_transform(1, 100, -40, 100, -40);
+        imgtest.add_size_transform(1, 50, -40, 50, -40, 0);
+        imgtest.add_state(25, 0, 25, 0, 1);
+        imgtest.add_size_transform(2, 50, 0, 50, 0);
+        imgtest.add_rotate_transform(2, 180);
+        imgtest.auto_reset = false;
+        imgtest.set_z_index(-1);
+        imgtest.set_image_scale_mode("cover");
+        imgtest.mod = 0;
+
+        // create pages
+        var page1 = new page('test page', manager);
+        var page1_callback = function() {
+            console.log("Page Loaded");
+        }
+        manager.add(page1);
+        page1.add_callback("animation_complete", page1_callback);
+        page1.add(test, 1, 1000, 1000);
+        page1.add(domtest, 1, 1000, 1000);
+
+        var page2 = new page('second page', manager);
+        manager.add(page2);
+        page2.add(test, 2, 500, 1000);
+        page2.add(test2, 1, 1000, 1000);
+        page2.add(imgtest, 1, 0, 1000);
+
+        var page3 = new page('third page', manager);
+        manager.add(page3);
+        page3.add(imgtest, 2, 0, 1000);
+        page3.add(imgtest, 2, 1000, 1000);
+        page3.add_callback("animation_complete", page1_callback);
+
+
+        // slider
+        pages1 = new page("Slider #1", manager);
+        manager.add(pages1);
+        pages1.add(testa, 1, 1000, 1000);
+        pages1.add(domtest, 1, 1000, 1000);
+
+        pages2 = new page("Slider #2", manager);
+        manager.add(pages2);
+        pages2.add(testb, 1, 1000, 1000);
+        pages2.add(domtest, 1, 1000, 1000);
+
+        pages3 = new page("Slider #3", manager);
+        manager.add(pages3);
+        pages3.add(testc, 1, 1000, 1000);
+        pages3.add(domtest, 1, 1000, 1000);
+
+        pages1.add(testa, 1, 2500, 1000);
+        pages2.add(testb, 1, 2500, 1000);
+        pages3.add(testc, 1, 2500, 1000);
+
+        pages1.add_callback("animation_complete", page1_callback);
+
+        testslider = new slider(manager);
+        testslider.add(pages1);
+        testslider.add(pages2);
+        testslider.add(pages3);
+
+        testslider.set_intro(page1);
+        testslider.callback = function (id) {
+            //console.log("id: "+ id);
+        };
+
+        // create inspector
+        var inspector = new inspector(manager);
+
+        // create listener
+        $(window).resize(function(){
+            meta.update();
+            manager.refresh();
+        });
+
+        $(window).load(function(){
+            inspector.enable("body");
+            test.init("body", "<div>HELLO</div>");
+            testa.init("body", "HELLOPAGE1");
+            testb.init("body", "HELLOPAGE2");
+            testc.init("body", "HELLOPAGE3");
+            domtest.init_with_selector("#domtest");
+            test2.init("body", "<div>WORLD</div>");
+            imgtest.init_with_image("body", "img/test.jpg");
+
+            testslider.init();
+
+            manager.goto_page(0);
+
+        });
+    </script>
+</head>
+<body>
+<div id="domtest">
+    <img src="img/icon.png">
+    <p>Hello World</p>
+</div>
+</body>
+</html>

@@ -139,6 +139,8 @@ object.prototype.add_state = function (x_percent, x_delta, y_percent, y_delta, a
 					 });
 };
 
+
+
 // accepts multi-line expansion at the same time
 object.prototype.add_optional_info = function (index, body, mod_id) {
 	//find length
@@ -230,6 +232,209 @@ object.prototype.add_callback = function (state_id, function_flag, func) {
 		console.error("ERROR: Unknown Function Slot");
 	}
 };
+
+// 2.0
+// anchor
+object.prototype.anchors = {
+	"center": [50, 0, 50, 0]
+};
+
+object.prototype.sizes = {
+	"fullscreen": [100, 0, 100, 0]
+}
+
+// state
+
+object.prototype.newState = function(matrix){
+	var target = {};
+	// get position
+	try {
+		target.position = this.checkMatrixPosition(matrix);
+	} catch(err) {
+		console.error(err);
+		return undefined;
+	}
+	// get alpha
+	try {
+		target.alpha = this.checkMatrixAlpha(matrix);
+	} catch (err) {
+		console.error(err);
+		return undefined;
+	}
+	// get size
+	try {
+		target.size = this.checkMatrixSize(matrix);
+	} catch(err) {
+		console.error(err);
+	}
+	// get rotate
+	try {
+		target.rotate = this.checkMatrixRotate(matrix);
+	} catch (err){
+		console.error(err);
+	}
+	// get easing
+	try {
+		target.easing = this.checkMatrixEasing(matrix);
+	} catch (err) {
+		console.error(err);
+	}
+
+	// create state
+	var newStateIndex = this.states.push({'x_percent': target.position[0],
+		'x_delta': target.position[1],
+		'y_percent': target.position[2],
+		'y_delta': target.position[3],
+		'alpha': target.alpha,
+		'mod': {}
+	}) - 1;
+
+	// optional
+	if (typeof target.size !== "undefined"){
+		this.states[newStateIndex].width_percent = target.size[0];
+		this.states[newStateIndex].width_delta = target.size[1];
+		this.states[newStateIndex].height_percent = target.size[2];
+		this.states[newStateIndex].height_delta = target.size[3];
+	}
+
+	if (typeof target.rotate !== "undefined"){
+		this.states[newStateIndex].angle = target.rotate;
+	}
+
+	if (typeof target.easing !== "undefined"){
+		this.states[newStateIndex].easing = target.easing;
+	}
+
+	return target;
+};
+
+// check matrix.position
+object.prototype.checkMatrixPosition = function(matrix){
+	if (typeof matrix.position === "undefined"){
+		throw "matrix.position is not exist";
+		return undefined;
+	} else {
+		if (typeof matrix.position.length === "undefined"){
+			throw "matrix.position is not an array";
+			return undefined;
+		} else {
+			// matrix is array or string
+			if (typeof matrix.position === "string"){
+				if (typeof object.prototype.anchors[matrix.position] === "undefined"){
+                    throw "the anchor of matrix.position is not exist"
+                    return undefined;
+                } else {
+					return object.prototype.anchors[matrix.position];
+				}
+			} else if (matrix.position.length == 4){
+				return matrix.position;
+			} else {
+				throw "matrix.position contains elements rather than 4";
+				return undefined;
+			}
+		}
+	}
+}
+
+// check matrix.size
+object.prototype.checkMatrixSize = function(matrix) {
+	if (typeof matrix.size !== "undefined"){
+		if (typeof matrix.size.length !== "undefined"){
+			if (typeof matrix.size === "string"){
+				if (typeof object.prototype.sizes[matrix.size] !== "undefined"){
+					return object.prototype.sizes[matrix.size];
+				} else {
+					throw "the size name of matrix.size does not exist";
+					return undefined;
+				}
+			} else {
+				if (matrix.size.length == 4) {
+					return matrix.size;
+				} else {
+					throw "matrix.size contains elements rather than 4";
+					return undefined;
+				}
+			}
+		} else {
+			throw "matrix.size is not an array";
+		}
+	} else {
+		return undefined;
+	}
+}
+
+// check matrix.alpha
+object.prototype.checkMatrixAlpha = function(matrix){
+	if (typeof matrix.alpha !== "undefined"){
+		if (typeof matrix.alpha === "number"){
+			if (matrix.alpha >= 0 && matrix.alpha <= 1){
+				return matrix.alpha;
+			} else {
+				throw "matrix.alpha is not between 0 and 1";
+				return undefined;
+			}
+		} else {
+			throw "matrix.alpha is not a number";
+			return undefined;
+		}
+	} else {
+		throw "matrix.alpha does not exist";
+		return undefined;
+	}
+}
+
+// check matrix.rotate
+object.prototype.checkMatrixRotate = function(matrix){
+	if (typeof matrix.rotate !== "undefined"){
+		if (typeof matrix.rotate === "number"){
+			return matrix.rotate;
+		} else {
+			throw "matrix.rotate is not a number";
+			return undefined;
+		}
+	} else {
+		return undefined;
+	}
+}
+
+// check matrix.mod
+object.prototype.checkMatrixMod = function(matrix){
+	if (typeof manager.mods === "undefined"){
+		throw "manager does not exist";
+		return undefined;
+	}
+	if (typeof matrix.mod !== "undefined"){
+		if (typeof matrix.mod === "number"){
+			if (matrix.mod >= 0 && matrix.mod < manager.mods.length){
+				return matrix.mod;
+			} else {
+				throw "matrix.mod is not correct";
+			}
+		} else if (typeof matrix.mod === "string"){
+			var index = manager.mods.indexOf(matrix.mod);
+			if (index >= 0){
+				return matrix.mod;
+			} else {
+				throw "matrix.mod does not exist in manager.mods"
+				return undefined;
+			}
+		} else {
+			throw "matrix.mod is not number or string";
+			return undefined;
+		}
+	} else {
+		return undefined;
+	}
+}
+
+// check easing
+object.prototype.checkMatrixEasing = function(matrix){
+	if (typeof matrix.easing !== "undefined"){
+		return matrix.easing;
+	} else {
+		return undefined;
+	}
+}
 
 /* Performance */
 
