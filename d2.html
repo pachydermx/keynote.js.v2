@@ -45,20 +45,27 @@
         }]);
         test.auto_reset = false;
 
+        var sliderStates = [
+            {
+                "position": "outer-right",
+                "alpha": 1
+            }, {
+                "position": "center",
+                "alpha": 1
+            }, {
+                "position": "outer-left",
+                "alpha": 1
+            }
+        ];
+
         var testa = new object("testa", meta);
-        testa.add_state(150, 0, 50, 0, 1);
-        testa.add_state(50, 0, 50, 0, 1);
-        testa.add_state(-50, 0, 50, 0, 1);
+        testa.newStates(sliderStates);
 
         var testb = new object("testb", meta);
-        testb.add_state(150, 0, 50, 0, 1);
-        testb.add_state(50, 0, 50, 0, 1);
-        testb.add_state(-50, 0, 50, 0, 1);
+        testb.newStates(sliderStates);
 
         var testc = new object("testc", meta);
-        testc.add_state(150, 0, 50, 0, 1);
-        testc.add_state(50, 0, 50, 0, 1);
-        testc.add_state(-50, 0, 50, 0, 1);
+        testc.newStates(sliderStates);
 
         testa.default_exit_location = 2;
         testb.default_exit_location = 2;
@@ -76,15 +83,28 @@
         test2.add_state(50, 0, 0, -10, 0);
         test2.default_exit_location = 2;
 
+        var imgtestSize = [100, -40, 100, -40];
+
         var imgtest = new object("test3", meta);
-        imgtest.add_state(-50, 0, 50, 0, 1);
-        imgtest.add_size_transform(0, 100, -40, 100, -40);
-        imgtest.add_state(50, 0, 50, 0, 1);
-        imgtest.add_size_transform(1, 100, -40, 100, -40);
-        imgtest.add_size_transform(1, 50, -40, 50, -40, 0);
-        imgtest.add_state(25, 0, 25, 0, 1);
-        imgtest.add_size_transform(2, 50, 0, 50, 0);
-        imgtest.add_rotate_transform(2, 180);
+        imgtest.newStates([{
+            "position": "outer-left",
+            "size": imgtestSize,
+            "alpha": 1
+        },{
+            "position": "center",
+            "size": imgtestSize,
+            "alpha": 1
+        },{
+            "position": [25, 0, 25, 0],
+            "size": [50, -40, 50, -40],
+            "alpha": 0,
+            "rotate": 180
+        }]);
+        imgtest.modState({
+            "index": 1,
+            "mod": 0,
+            "size": [50, -40, 50, -40]
+        })
         imgtest.auto_reset = false;
         imgtest.set_z_index(-1);
         imgtest.set_image_scale_mode("cover");

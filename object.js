@@ -238,7 +238,25 @@ object.prototype.add_callback = function (state_id, function_flag, func) {
 // 2.0
 // anchor
 object.prototype.anchors = {
-	"center": [50, 0, 50, 0]
+	"top-left": [0, 0, 0, 0],
+	"top": [50, 0, 0, 0],
+	"top-right": [100, 0, 0, 0],
+	"left": [0, 0, 50, 0],
+	"center": [50, 0, 50, 0],
+	"right": [100, 0, 50, 0],
+	"bottom-left": [0, 0, 100, 0],
+	"bottom": [50, 0, 100, 0],
+	"bottom-right": [100, 0, 100, 0],
+
+	"outer-top-left": [-50, 0, -50, 0],
+	"outer-top": [50, 0, -50, 0],
+	"outer-top-right": [150, 0, -50, 0],
+	"outer-left": [-50, 0, 50, 0],
+	"outer-center": [50, 0, 50, 0],
+	"outer-right": [150, 0, 50, 0],
+	"outer-bottom-left": [-50, 0, 150, 0],
+	"outer-bottom": [50, 0, 150, 0],
+	"outer-bottom-right": [150, 0, 150, 0]
 };
 
 object.prototype.sizes = {
@@ -256,21 +274,19 @@ object.prototype.newStates = function (matrixArray) {
 	}
 }
 
-object.prototype.newState = function(matrix){
+object.prototype.getStateFromMatrix = function(matrix){
 	var target = {};
 	// get position
 	try {
 		target.position = this.checkMatrixPosition(matrix);
 	} catch(err) {
 		console.error(err);
-		return undefined;
 	}
 	// get alpha
 	try {
 		target.alpha = this.checkMatrixAlpha(matrix);
 	} catch (err) {
 		console.error(err);
-		return undefined;
 	}
 	// get size
 	try {
@@ -289,6 +305,24 @@ object.prototype.newState = function(matrix){
 		target.easing = this.checkMatrixEasing(matrix);
 	} catch (err) {
 		console.error(err);
+	}
+	try {
+		target.mod = this.checkMatrixMod(matrix);
+	} catch (err) {
+		console.error(err);
+	}
+
+	return target;
+
+}
+
+object.prototype.newState = function(matrix){
+	var target = this.getStateFromMatrix(matrix);
+
+	// check target
+	if (typeof target.position === "undefined" || typeof target.alpha === "undefined"){
+		console.error("no position or alpha is included in target");
+		return undefined;
 	}
 
 	// create state
@@ -325,10 +359,58 @@ object.prototype.newState = function(matrix){
 	return target;
 };
 
+object.prototype.modState = function(matrix){
+	var target = this.getStateFromMatrix(matrix);
+
+	// check target
+	if (typeof matrix.index !== "number"){
+		console.error("target.index is not assigned");
+		return undefined
+	}
+	index = matrix.index;
+
+	if (typeof target.mod === "undefined"){
+		console.error("target.mod is not assigned");
+		return undefined;
+	}
+
+	// create mod
+	this.states[index].mod[target.mod] = {};
+
+	// add data
+	if (typeof target.position !== "undefined"){
+		this.states[index].mod[target.mod].x_percent = target.position[0];
+		this.states[index].mod[target.mod].x_delta = target.position[1];
+		this.states[index].mod[target.mod].y_percent = target.position[2];
+		this.states[index].mod[target.mod].y_delta = target.position[3];
+	}
+
+	if (typeof target.alpha !== "undefined"){
+		this.states[index].mod[target.mod].alpha = target.alpha;
+	}
+
+	if (typeof target.size !== "undefined"){
+		this.states[index].mod[target.mod].width_percent = target.size[0];
+		this.states[index].mod[target.mod].width_delta = target.size[1];
+		this.states[index].mod[target.mod].height_percent = target.size[2];
+		this.states[index].mod[target.mod].height_delta = target.size[3];
+	}
+
+	if (typeof target.rotate !== "undefined"){
+		this.states[index].mod[target.mod].angle = target.rotate;
+	}
+
+	if (typeof target.easing !== "undefined"){
+		this.states[index].mod[target.mod].easing = target.easing;
+	}
+
+	return target;
+
+};
+
 // check matrix.position
 object.prototype.checkMatrixPosition = function(matrix){
 	if (typeof matrix.position === "undefined"){
-		throw "matrix.position is not exist";
 		return undefined;
 	} else {
 		if (typeof matrix.position.length === "undefined"){
@@ -405,7 +487,6 @@ object.prototype.checkMatrixAlpha = function(matrix){
 			return undefined;
 		}
 	} else {
-		throw "matrix.alpha does not exist";
 		return undefined;
 	}
 }
