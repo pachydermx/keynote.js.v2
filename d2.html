@@ -186,9 +186,10 @@
             testa.init("body", "HELLOPAGE1");
             testb.init("body", "HELLOPAGE2");
             testc.init("body", "HELLOPAGE3");
-            domtest.init_with_selector("#domtest");
             test2.init("body", "<div>WORLD</div>");
             imgtest.init_with_image("body", "img/test.jpg");
+
+            manager.autoInitObjects();
 
             testslider.init();
 

@@ -6,6 +6,7 @@ function object(id, meta, auto_reset) {
     if (id.indexOf(' ') >= 0){
         console.error("Error: Space in object ID");
     }
+	this.initialized = false;
     this.states = [];
     this.meta = meta;
     if (typeof auto_reset !== "undefined") {
@@ -45,6 +46,7 @@ object.prototype.init = function (selector, content, class_name) {
     if (this.states.length > 0) {
 		this.moveToState(0, 0);
     }
+	this.initialized = true;
 };
 
 // init with image
@@ -57,6 +59,7 @@ object.prototype.init_with_image = function (selector, image) {
 	this.default_class = this.dom_obj.attr("class");
     // set size
     this.refresh();
+	this.initialized = true;
 };
 
 // init from DOM object
@@ -75,7 +78,14 @@ object.prototype.init_with_selector = function (object_selector, additional_clas
         var pos = this.states[0];
         this.to(pos, 0);
     }
+	this.initialized = true;
 };
+
+object.prototype.autoInit = function () {
+	if (!this.initialized) {
+		this.init_with_selector("#" + this.id, undefined);
+	}
+}
 
 // set size
 object.prototype.set_size = function (width_percent, width_delta, height_percent, height_delta) {

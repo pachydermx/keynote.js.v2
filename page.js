@@ -238,3 +238,9 @@ page.prototype.add_callback = function (function_flag, func){
 			console.error("ERROR: Unknown function flag");
 	}
 };
+
+page.prototype.autoInitObjects = function(){
+	for (var i = 0; i < this.objects.length; i++){
+		this.objects[i].object.autoInit();
+	}
+}

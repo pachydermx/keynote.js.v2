@@ -1,7 +1,7 @@
 // manager controls pages
 function manager() {
     this.pages = [];
-	// for discrete objects
+	// discrete objects
     this.objects = [];
     this.lastPage = undefined;
 	/* flags
@@ -135,4 +135,15 @@ function manager() {
 	};
 	
 	
+	/* Utilities */
+	this.autoInitObjects = function(){
+		// objects in pages
+		for (var i = 0; i < this.pages.length; i++){
+			this.pages[i].autoInitObjects();
+		}
+		// discrete objects
+		for (var i = 0; i < this.objects.length; i++){
+			this.objects[i].autoInit();
+		}
+	};
 }
