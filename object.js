@@ -260,7 +260,10 @@ object.prototype.anchors = {
 };
 
 object.prototype.sizes = {
-	"fullscreen": [100, 0, 100, 0]
+	"fullscreen": [100, 0, 100, 0],
+	"vertical-half": [50, 0, 100, 0],
+	"horizontal-half": [100, 0, 50, 0],
+	"quater": [50, 0, 50, 0]
 }
 
 // state
@@ -358,6 +361,24 @@ object.prototype.newState = function(matrix){
 
 	return target;
 };
+
+object.prototype.modStates = function(matrixArray){
+	if (typeof matrixArray.length !== "number"){
+		console.error("matrixArray is not an array");
+		return undefined;
+	}
+
+	if (matrixArray.length > this.states.length){
+		console.error("matrixArray contains more states than it should be");
+		return undefined;
+	}
+
+	for (var i = 0; i < matrixArray.length; i++){
+		var targetMatrix = matrixArray[i];
+		targetMatrix.index = i;
+		this.modState(targetMatrix);
+	}
+}
 
 object.prototype.modState = function(matrix){
 	var target = this.getStateFromMatrix(matrix);
