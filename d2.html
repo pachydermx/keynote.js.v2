@@ -28,22 +28,21 @@
 
         // create objects
         var test = new object("test", meta);
-        test.newState({
+        test.newStates([{
             "position": "center",
             "alpha": 0
-        });
-        test.newState({
-            "position": [50, 0, 50, 200],
+        }, {
+            "position": "center",
+            "shift": [0, 0, 0, 200],
+            "alpha": 1,
+            "func_complete": function(){
+                console.log("hello world");
+            }
+        }, {
+            "position": "center",
+            "shift": [0, 0, 0, 100],
             "alpha": 1
-        });
-        test.newState({
-            "position": [50, 0, 50, 100],
-            "alpha": 1
-        });
-        var test_complete = function(){
-            console.log("Hello world");
-        };
-        test.add_callback(1, "complete", test_complete);
+        }]);
         test.auto_reset = false;
 
         var testa = new object("testa", meta);

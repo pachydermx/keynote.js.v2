@@ -27,6 +27,8 @@ object.prototype.default_easing = "linear";
 /* Basic */
 object.prototype.parameters = ['x_percent', 'x_delta', 'y_percent', 'y_delta', 'alpha', 'width_percent', 'width_delta', 'height_percent', 'height_delta', 'angle', 'easing'];
 
+object.prototype.callbackFunctions = ['func_complete'];
+
 // init object
 object.prototype.init = function (selector, content, class_name) {
     if (typeof class_name === "undefined") {
@@ -244,6 +246,15 @@ object.prototype.sizes = {
 }
 
 // state
+object.prototype.newStates = function (matrixArray) {
+	if (typeof matrixArray.length === "number"){
+		for (var i = 0; i < matrixArray.length; i++) {
+			this.newState(matrixArray[i]);
+		}
+	} else {
+		console.error("matrixArray is not an array");
+	}
+}
 
 object.prototype.newState = function(matrix){
 	var target = {};
@@ -305,6 +316,12 @@ object.prototype.newState = function(matrix){
 		this.states[newStateIndex].easing = target.easing;
 	}
 
+	for (var i = 0; i < object.prototype.callbackFunctions.length; i++){
+		if (typeof matrix[object.prototype.callbackFunctions[i]] !== "undefined"){
+			this.states[newStateIndex][object.prototype.callbackFunctions[i]] = matrix[object.prototype.callbackFunctions[i]];
+		}
+	}
+
 	return target;
 };
 
@@ -324,7 +341,17 @@ object.prototype.checkMatrixPosition = function(matrix){
                     throw "the anchor of matrix.position is not exist"
                     return undefined;
                 } else {
-					return object.prototype.anchors[matrix.position];
+					if (typeof matrix.shift !== "undefined"){
+						if (matrix.shift.length == 4) {
+							var anchor = object.prototype.anchors[matrix.position];
+							return [anchor[0] + matrix.shift[0], anchor[1] + matrix.shift[1], anchor[2] + matrix.shift[2], anchor[3] + matrix.shift[3]];
+						} else {
+							throw "matrix.shift contains elements rather than 4";
+							return undefined;
+						}
+					} else {
+						return object.prototype.anchors[matrix.position];
+					}
 				}
 			} else if (matrix.position.length == 4){
 				return matrix.position;
@@ -427,7 +454,7 @@ object.prototype.checkMatrixMod = function(matrix){
 	}
 }
 
-// check easing
+// check matrix.easing
 object.prototype.checkMatrixEasing = function(matrix){
 	if (typeof matrix.easing !== "undefined"){
 		return matrix.easing;
