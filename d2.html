@@ -27,7 +27,7 @@
         manager.mods = ["iPad", "Vertical"];
 
         // create objects
-        var test = new object("test", meta);
+        var test = new object("test");
         test.newStates([{
             "position": "center",
             "alpha": 0
@@ -117,41 +117,41 @@
         imgtest.set_image_scale_mode("cover");
 
         // create pages
-        var page1 = new page('test page', manager);
+        var page1 = new page('test page', true);
         var page1_callback = function() {
             console.log("Page Loaded");
-        }
-        manager.add(page1);
-        page1.add_callback("animation_complete", page1_callback);
-        page1.add(test, 1, 1000, 1000);
-        page1.add(domtest, 1, 1000, 1000);
+        };
+        page1.addObjects([
+            {
+                "object": test,
+                "state": 1,
+                "interval": 1000,
+                "duration": 1000
+            },
+                [domtest, 1, 1000, 1000]
+        ]);
 
-        var page2 = new page('second page', manager);
-        manager.add(page2);
+        var page2 = new page('second page', true);
         page2.add(test, 2, 500, 1000);
         page2.add(test2, 1, 1000, 1000);
         page2.add(imgtest, 1, 0, 1000);
 
-        var page3 = new page('third page', manager);
-        manager.add(page3);
+        var page3 = new page('third page', true);
         page3.add(imgtest, 2, 0, 1000);
         page3.add(imgtest, 2, 1000, 1000);
         page3.add_callback("animation_complete", page1_callback);
 
 
         // slider
-        pages1 = new page("Slider #1", manager);
-        manager.add(pages1);
+        pages1 = new page("Slider #1", false);
         pages1.add(testa, 1, 1000, 1000);
         pages1.add(domtest, 1, 1000, 1000);
 
-        pages2 = new page("Slider #2", manager);
-        manager.add(pages2);
+        pages2 = new page("Slider #2", false);
         pages2.add(testb, 1, 1000, 1000);
         pages2.add(domtest, 1, 1000, 1000);
 
-        pages3 = new page("Slider #3", manager);
-        manager.add(pages3);
+        pages3 = new page("Slider #3", false);
         pages3.add(testc, 1, 1000, 1000);
         pages3.add(domtest, 1, 1000, 1000);
 

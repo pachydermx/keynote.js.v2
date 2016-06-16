@@ -1,5 +1,5 @@
 // page is a status of an array of objects
-function page(name, manager) {
+function page(name, isRegular) {
     this.name = name;
     this.manager = manager;
     this.objects = [];
@@ -7,6 +7,11 @@ function page(name, manager) {
 	this.callbacks = {};
 	this.counter = 0;
     this.default_duration = 1000;
+
+	// init
+	if (typeof isRegular === "boolean"){
+		this.manager.add(this, isRegular);
+	}
 }
     
 // add object to page
@@ -16,6 +21,167 @@ page.prototype.add = function (obj, state, interval, duration) {
 					   'interval': interval,
 					  'duration': duration});
 };
+
+// 2.0
+page.prototype.addObjects = function (objList) {
+	// check list
+	if (typeof objList === "undefined"){
+		console.error("objList is not set");
+		return undefined;
+	}
+	if (typeof objList.length === "undefined"){
+		console.error("objList is not an array");
+		return undefined;
+	}
+	// get final list
+	for (var i = 0; i < objList.length; i++){
+		if (typeof objList[i].length === "undefined"){
+			// dictionary
+			try {
+				this.objects.push(this.checkListDictionary(objList[i]));
+			} catch (err) {
+				console.error(err);
+				return undefined;
+			}
+		} else {
+			// array
+			try {
+				this.objects.push(this.loadListArray(objList[i]));
+			} catch (err) {
+				console.error(err);
+				return undefined;
+			}
+		}
+	}
+};
+
+page.prototype.checkListDictionary = function (objDictionary) {
+	// check dictionary
+	try {
+		this.checkObjectListObject(objDictionary.object);
+		this.checkObjectListState(objDictionary.state);
+		this.checkObjectListInterval(objDictionary.interval);
+		this.checkObjectListDuration(objDictionary.duration);
+	} catch (err) {
+		throw err;
+		return undefined;
+	}
+	// return
+	return objDictionary;
+};
+
+page.prototype.loadListArray = function (objArray) {
+	// check
+	try {
+		this.checkListArray(objArray);
+	} catch (err) {
+		throw err;
+		return undefined;
+	}
+	// return
+	return {
+		"object": objArray[0],
+		"state": objArray[1],
+		"interval": objArray[2],
+		"duration": objArray[3]
+	};
+};
+
+page.prototype.checkListArray = function (objArray) {
+	// check array
+	if (typeof objArray === "undefined"){
+		throw "objArray is not set";
+		return undefined;
+	}
+	if (typeof objArray.length === "undefined"){
+		throw "objArray is not an array";
+		return undefined;
+	}
+	if (objArray.length < 4){
+		throw "objArray contains less than 4 elements"
+		return undefined;
+	}
+	// check item
+	try {
+		this.checkObjectListObject(objArray[0]);
+	} catch (err) {
+		throw err;
+		throw "object in objArray is not correct";
+		return undefined;
+	}
+	try {
+		this.checkObjectListState(objArray[1]);
+	} catch (err) {
+		throw err;
+		throw "state in objArray is not correct";
+		return undefined;
+	}
+	try {
+		this.checkObjectListInterval(objArray[2]);
+	} catch (err) {
+		throw err;
+		throw "interval in objArray is not correct";
+		return undefined;
+	}
+	try {
+		this.checkObjectListDuration(objArray[3]);
+	} catch (err) {
+		throw err;
+		throw "duration in objArray is not correct";
+		return undefined;
+	}
+}
+
+page.prototype.checkObjectListObject = function (listObject){
+	if (typeof listObject !== "undefined"){
+		if (typeof listObject.state === "undefined"){
+			throw "objDictionary.object is not an object";
+			return undefined;
+		}
+	} else {
+		throw "objDictionary.object is not set";
+		return undefined;
+	}
+};
+
+page.prototype.checkObjectListState = function (listState){
+	if (typeof listState !== "undefined"){
+		this.checkListNumber("state", listState);
+	} else {
+		throw "objDictionary.state is not set";
+		return undefined;
+	}
+};
+
+page.prototype.checkObjectListInterval = function (listInterval) {
+	if (typeof listInterval !== "undefined"){
+		this.checkListNumber("interval", listInterval);
+	} else {
+		throw "objDictionary.interval is not set";
+		return undefined;
+	}
+};
+
+page.prototype.checkObjectListDuration = function (listDuration) {
+	if (typeof listDuration !== "undefined"){
+		this.checkListNumber("duration", listDuration);
+	} else {
+		throw "objDictionary.duration is not set";
+		return undefined;
+	}
+};
+
+page.prototype.checkListNumber = function (name, num) {
+	if (typeof num === "number"){
+		if (num < 0){
+			throw name + " is not positive";
+			return undefined;
+		}
+	} else {
+		throw name + " is not a number";
+		return undefined
+	}
+}
 
 // reset positions
 page.prototype.refresh = function () {

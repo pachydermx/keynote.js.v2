@@ -1,5 +1,5 @@
 // object is basic type of component
-function object(id, meta, auto_reset) {
+function object(id, ometa, auto_reset) {
     // properties
     this.id = id;
     // check id
@@ -8,7 +8,11 @@ function object(id, meta, auto_reset) {
     }
 	this.initialized = false;
     this.states = [];
-    this.meta = meta;
+	if (typeof ometa !== "undefined"){
+		this.meta = ometa;
+	} else {
+		this.meta = meta;
+	}
     if (typeof auto_reset !== "undefined") {
         this.auto_reset = auto_reset;
     } else {
